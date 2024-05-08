@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react';
 import { fetchPhotosByQuery, PhotoData } from '../api';
-import ImageModal from '../ImageModal/ImageModal';
-
 import SearchBar from '../SearchBar/SearchBar';
 import ImageGallery from '../ImageGallery/ImageGallery';
 import Loader from '../Loader/Loader';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import LoadMoreBtn from '../LoadMoreBtn/LoadMoreBtn';
+import { ImageModal } from '../ImageModal/ImageModal';
 
 import css from './App.module.css';
 
@@ -18,17 +17,17 @@ const App: React.FC = () => {
   const [page, setPage] = useState<number>(0);
   const [loadMore, setLoadMore] = useState<boolean>(false);
   const [content, setContent] = useState<string | null>(null);
-  const [modalIsOpen, setIsOpen] = useState<boolean>(false); // Додано useState
+  const [query, setQuery] = useState<string>('');
+  const [modalIsOpen, setIsOpen] = useState<boolean>(false);
 
   const userQuery = (value: string): void => {
     setQuery(value);
-
     setPage(1);
     setPhotos(null);
   };
 
   useEffect(() => {
-    async function fetchPhotos(): Promise<void> {
+    async function fetchPhotos() {
       if (query === '') return;
       try {
         setLoading(true);
