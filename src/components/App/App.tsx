@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { fetchPhotosByQuery } from '../api';
+import { fetchPhotosByQuery, PhotoData } from '../api';
 
 import SearchBar from '../SearchBar/SearchBar';
 import ImageGallery from '../ImageGallery/ImageGallery';
@@ -10,20 +10,19 @@ import { ImageModal } from '../ImageModal/ImageModal';
 
 import css from './App.module.css';
 
-const App = () => {
-  const [response, setResponse] = useState(null);
-  const [photos, setPhotos] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
-  const [page, setPage] = useState(0);
-  const [loadMore, setLoadMore] = useState(false);
-  const [content, setContent] = useState(null);
-  const [query, setQuery] = useState('');
-  const [modalIsOpen, setIsOpen] = useState(false);
+const App: React.FC = () => {
+  const [response, setResponse] = useState<PhotoData | null>(null);
+  const [photos, setPhotos] = useState<PhotoData[] | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+  const [page, setPage] = useState<number>(0);
+  const [loadMore, setLoadMore] = useState<boolean>(false);
+  const [content, setContent] = useState<string | null>(null);
+  const [query, setQuery] = useState<string>('');
+  const [modalIsOpen, setIsOpen] = useState<boolean>(false);
 
-  const userQuery = value => {
+  const userQuery = (value: string): void => {
     setQuery(value);
-
     setPage(1);
     setPhotos(null);
   };
@@ -47,7 +46,7 @@ const App = () => {
         if (photos === null || photos.length === 0) {
           setPhotos(data.results);
         } else if (page > 1) {
-          setPhotos([...photos, ...data.results]);
+          setPhotos(prevPhotos => [...(prevPhotos || []), ...data.results]);
         } else {
           setPhotos(data.results);
         }
@@ -63,8 +62,8 @@ const App = () => {
     }
   }, [query, page]);
 
-  const loadMorePhotos = () => {
-    if (page <= response.total_pages) {
+  const loadMorePhotos = (): void => {
+    if (response && page <= response.total_pages) {
       setPage(page + 1);
     } else {
       setLoadMore(false);
@@ -72,17 +71,17 @@ const App = () => {
     }
   };
 
-  const handleImageClick = url => {
+  const handleImageClick = (url: string): void => {
     setContent(url);
   };
 
-  function openModal() {
+  const openModal = (): void => {
     setIsOpen(true);
-  }
+  };
 
-  function closeModal() {
+  const closeModal = (): void => {
     setIsOpen(false);
-  }
+  };
 
   return (
     <div className={css.container}>
@@ -97,7 +96,7 @@ const App = () => {
       {error && <ErrorMessage></ErrorMessage>}
       {loading && <Loader></Loader>}
       {loadMore && (
-        <LoadMoreBtn loadMoreScroll={photos} onLoadMoreBtn={loadMorePhotos}></LoadMoreBtn>
+        <LoadMoreBtn loadMoreScroll={photos || []} onLoadMoreBtn={loadMorePhotos}></LoadMoreBtn>
       )}
       <ImageModal
         onOpenButton={openModal}
