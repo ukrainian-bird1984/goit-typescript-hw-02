@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { fetchPhotosByQuery, PhotoData } from '../api';
+
 import SearchBar from '../SearchBar/SearchBar';
 import ImageGallery from '../ImageGallery/ImageGallery';
 import Loader from '../Loader/Loader';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import LoadMoreBtn from '../LoadMoreBtn/LoadMoreBtn';
 import { ImageModal } from '../ImageModal/ImageModal';
+
 import css from './App.module.css';
 
 const App: React.FC = () => {
@@ -82,25 +84,25 @@ const App: React.FC = () => {
 
   return (
     <div className={css.container}>
-      <SearchBar onSubmit={userQuery} />
+      <SearchBar onSubmit={userQuery}></SearchBar>
       {Array.isArray(photos) && (
         <ImageGallery
           collection={photos}
           onPhotoClick={handleImageClick}
           openModal={openModal}
-        />
+        ></ImageGallery>
       )}
-      {error && <ErrorMessage />}
-      {loading && <Loader />}
+      {error && <ErrorMessage></ErrorMessage>}
+      {loading && <Loader></Loader>}
       {loadMore && (
-        <LoadMoreBtn loadMoreScroll={photos} onLoadMoreBtn={loadMorePhotos} />
+        <LoadMoreBtn loadMoreScroll={photos} onLoadMoreBtn={loadMorePhotos}></LoadMoreBtn>
       )}
       <ImageModal
         onOpenButton={openModal}
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
         content={content}
-      />
+      ></ImageModal>
     </div>
   );
 };
