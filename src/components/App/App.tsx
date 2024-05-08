@@ -102,7 +102,7 @@ const App: React.FC = () => {
         onOpenButton={openModal}
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
-        content={content || ''} {/* Change null to '' */}
+        content={content || ''}
       ></ImageModal>
     </div>
   );
