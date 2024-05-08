@@ -1,26 +1,29 @@
-import { useEffect, useState } from 'react';
-import { fetchPhotosByQuery, PhotoData } from '../api';
+import React, { useEffect, useState } from 'react';
+import { fetchPhotosByQuery } from '../api';
+
 import SearchBar from '../SearchBar/SearchBar';
 import ImageGallery from '../ImageGallery/ImageGallery';
 import Loader from '../Loader/Loader';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import LoadMoreBtn from '../LoadMoreBtn/LoadMoreBtn';
-import ImageModal from '../ImageModal/ImageModal'; 
+import { ImageModal } from '../ImageModal/ImageModal';
 
 import css from './App.module.css';
 
-const App: React.FC = () => {
-  const [response, setResponse] = useState<PhotoData | null>(null); 
-  const [photos, setPhotos] = useState<PhotoData[] | null>(null); 
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<boolean>(false);
-  const [page, setPage] = useState<number>(0);
-  const [loadMore, setLoadMore] = useState<boolean>(false);
-  const [content, setContent] = useState<string | null>(null);
-  const [query, setQuery] = useState<string>('');
+const App = () => {
+  const [response, setResponse] = useState(null);
+  const [photos, setPhotos] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
+  const [page, setPage] = useState(0);
+  const [loadMore, setLoadMore] = useState(false);
+  const [content, setContent] = useState(null);
+  const [query, setQuery] = useState('');
+  const [modalIsOpen, setIsOpen] = useState(false);
 
-  const userQuery = (value: string): void => {
+  const userQuery = value => {
     setQuery(value);
+
     setPage(1);
     setPhotos(null);
   };
@@ -60,8 +63,8 @@ const App: React.FC = () => {
     }
   }, [query, page]);
 
-  const loadMorePhotos = (): void => {
-    if (page <= (response?.total_pages || 0)) {
+  const loadMorePhotos = () => {
+    if (page <= response.total_pages) {
       setPage(page + 1);
     } else {
       setLoadMore(false);
@@ -69,17 +72,17 @@ const App: React.FC = () => {
     }
   };
 
-  const handleImageClick = (url: string): void => {
+  const handleImageClick = url => {
     setContent(url);
   };
 
-  const openModal = (): void => {
-    setModalIsOpen(true); 
-  };
+  function openModal() {
+    setIsOpen(true);
+  }
 
-  const closeModal = (): void => {
-    setModalIsOpen(false); 
-  };
+  function closeModal() {
+    setIsOpen(false);
+  }
 
   return (
     <div className={css.container}>
