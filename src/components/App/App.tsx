@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { fetchPhotosByQuery } from '../api';
+import React, { useEffect, useState } from 'react';
+import { fetchPhotosByQuery, PhotoData } from '../api';
 
 import SearchBar from '../SearchBar/SearchBar';
 import ImageGallery from '../ImageGallery/ImageGallery';
@@ -10,22 +10,19 @@ import { ImageModal } from '../ImageModal/ImageModal';
 
 import css from './App.module.css';
 
-const App = () => {
-  // state variables
-  const [response, setResponse] = useState(null);
-  const [photos, setPhotos] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
-  const [page, setPage] = useState(0);
-  const [loadMore, setLoadMore] = useState(false);
-  const [content, setContent] = useState(null);
-  const [query, setQuery] = useState('');
-  const [modalIsOpen, setIsOpen] = useState(false);
-  // fetch photos
+const App: React.FC = () => {
+  const [response, setResponse] = useState<any>(null);
+  const [photos, setPhotos] = useState<PhotoData[] | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+  const [page, setPage] = useState<number>(0);
+  const [loadMore, setLoadMore] = useState<boolean>(false);
+  const [content, setContent] = useState<string | null>(null);
+  const [query, setQuery] = useState<string>('');
+  const [modalIsOpen, setIsOpen] = useState<boolean>(false);
 
-  const userQuery = value => {
+  const userQuery = (value: string) => {
     setQuery(value);
-
     setPage(1);
     setPhotos(null);
   };
@@ -65,7 +62,6 @@ const App = () => {
     }
   }, [query, page]);
 
-  // load more photos
   const loadMorePhotos = () => {
     if (page <= response.total_pages) {
       setPage(page + 1);
@@ -75,20 +71,18 @@ const App = () => {
     }
   };
 
-  // logic of open modal
-  const handleImageClick = url => {
+  const handleImageClick = (url: string) => {
     setContent(url);
   };
 
-  function openModal() {
+  const openModal = () => {
     setIsOpen(true);
-  }
+  };
 
-  function closeModal() {
+  const closeModal = () => {
     setIsOpen(false);
-  }
+  };
 
-  // render
   return (
     <div className={css.container}>
       <SearchBar onSubmit={userQuery}></SearchBar>

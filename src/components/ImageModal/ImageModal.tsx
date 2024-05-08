@@ -1,6 +1,14 @@
+import React from 'react';
 import Modal from 'react-modal';
 
-const customStyles = {
+interface ImageModalProps {
+  isOpen: boolean;
+  onRequestClose: () => void;
+  onOpenButton: () => void;
+  content: string;
+}
+
+const customStyles: Modal.Styles = {
   overlay: {
     position: 'fixed',
     top: 0,
@@ -18,9 +26,10 @@ const customStyles = {
     transform: 'translate(-50%, -50%)',
   },
 };
+
 Modal.setAppElement('#root');
 
-export const ImageModal = ({ isOpen, onRequestClose, onOpenButton, content }) => {
+const ImageModal: React.FC<ImageModalProps> = ({ isOpen, onRequestClose, content }) => {
   return (
     <div>
       <Modal
@@ -36,3 +45,5 @@ export const ImageModal = ({ isOpen, onRequestClose, onOpenButton, content }) =>
     </div>
   );
 };
+
+export default ImageModal;
