@@ -1,0 +1,19 @@
+.card {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+.image {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.description {
+    font-size: 14px;
+    color: #666;
+    margin: 5px 0;
+}
