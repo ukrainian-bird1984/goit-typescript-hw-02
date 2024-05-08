@@ -5,13 +5,13 @@ import ImageGallery from '../ImageGallery/ImageGallery';
 import Loader from '../Loader/Loader';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import LoadMoreBtn from '../LoadMoreBtn/LoadMoreBtn';
-import { ImageModal } from '../ImageModal/ImageModal';
+import ImageModal from '../ImageModal/ImageModal';
 
 import css from './App.module.css';
 
 const App: React.FC = () => {
   const [response, setResponse] = useState<any>(null);
-  const [photos, setPhotos] = useState<PhotoData[] | null>(null);
+  const [photos, setPhotos] = useState<[] | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
   const [page, setPage] = useState<number>(0);
