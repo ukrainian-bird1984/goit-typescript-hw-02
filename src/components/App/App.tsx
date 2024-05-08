@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { fetchPhotosByQuery, PhotoData } from '../api';
+import { fetchPhotosByQuery } from '../api';
 
 import SearchBar from '../SearchBar/SearchBar';
 import ImageGallery from '../ImageGallery/ImageGallery';
@@ -11,8 +11,8 @@ import { ImageModal } from '../ImageModal/ImageModal';
 import css from './App.module.css';
 
 const App: React.FC = () => {
-  const [response, setResponse] = useState<PhotoData | null>(null);
-  const [photos, setPhotos] = useState<PhotoData[] | null>(null);
+ const [response, setResponse] = useState<any | null>(null);
+const [photos, setPhotos] = useState<any[] | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
   const [page, setPage] = useState<number>(0);
