@@ -1,6 +1,7 @@
 import React from 'react';
 import ImageCard from '../ImageCard/ImageCard';
-import types from '../types';
+import { Photo } from '../types';
+
 import css from './ImageGallery.module.css';
 
 interface Photo {

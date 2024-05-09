@@ -1,5 +1,6 @@
 import React from 'react';
 import css from './ImageCard.module.css';
+import { Photo } from '../types';
 
 interface ImageData {
   description: string;

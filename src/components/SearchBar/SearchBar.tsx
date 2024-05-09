@@ -1,6 +1,5 @@
 import { useState, ChangeEvent, FormEvent } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
-import types from '../types';
 import css from './SearchBar.module.css';
 
 interface SearchBarProps {

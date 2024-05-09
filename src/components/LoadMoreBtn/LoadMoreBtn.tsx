@@ -1,5 +1,6 @@
 import { useEffect, useRef, MouseEvent } from 'react';
-import types from '../types';
+import { Photo } from '../types';
+
 import css from './LoadMoreBtn.module.css';
 
 interface LoadMoreBtnProps {

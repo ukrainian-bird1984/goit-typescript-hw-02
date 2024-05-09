@@ -2,13 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { AxiosResponse } from 'axios';
 import { fetchPhotosByQuery } from '../api';
 
-import types from '../types';
 import SearchBar from '../SearchBar/SearchBar';
 import ImageGallery from '../ImageGallery/ImageGallery';
 import Loader from '../Loader/Loader';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import LoadMoreBtn from '../LoadMoreBtn/LoadMoreBtn';
 import ImageModal from '../ImageModal/ImageModal';
+import { Photo } from '../types';
 
 import css from './App.module.css';
 
@@ -21,7 +21,7 @@ interface Photo {
 }
 
 const App: React.FC = () => {
-  const [response, setResponse] = useState<AxiosResponse<any> | null>(null);
+  const [response, setResponse] = useState<AxiosResponse<{ data: { total_pages: number; results: Photo[] } }> | null>(null);
   const [photos, setPhotos] = useState<Photo[] | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
