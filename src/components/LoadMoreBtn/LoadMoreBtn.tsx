@@ -3,7 +3,7 @@ import css from './LoadMoreBtn.module.css';
 
 interface LoadMoreBtnProps {
   onLoadMoreBtn: () => void;
-  loadMoreScroll: any;
+  loadMoreScroll: string[];
 }
 
 const LoadMoreBtn: React.FC<LoadMoreBtnProps> = ({ onLoadMoreBtn, loadMoreScroll }) => {

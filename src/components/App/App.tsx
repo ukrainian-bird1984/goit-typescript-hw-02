@@ -10,14 +10,17 @@ import ImageModal from '../ImageModal/ImageModal';
 
 import css from './App.module.css';
 
+interface Photo {
+}
+
 const App: React.FC = () => {
-  const [response, setResponse] = useState<any | null>(null);
-  const [photos, setPhotos] = useState<any[] | null>(null);
+  const [response, setResponse] = useState<UnsplashResponse | null>(null);
+  const [photos, setPhotos] = useState<Photo[] | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
   const [page, setPage] = useState<number>(0);
   const [loadMore, setLoadMore] = useState<boolean>(false);
-  const [content, setContent] = useState<string>(''); // Change null to ''
+  const [content, setContent] = useState<string>('');
   const [query, setQuery] = useState<string>('');
   const [modalIsOpen, setIsOpen] = useState<boolean>(false);
 
