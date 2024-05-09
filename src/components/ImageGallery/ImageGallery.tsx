@@ -8,6 +8,10 @@ interface Photo {
     regular: string;
     thumb: string;
   };
+  description: string; 
+  alt_description: string; 
+  likes: number; 
+  user: string; 
 }
 
 interface ImageGalleryProps {

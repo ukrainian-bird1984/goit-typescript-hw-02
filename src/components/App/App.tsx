@@ -30,8 +30,8 @@ const App: React.FC = () => {
   const [error, setError] = useState<boolean>(false);
   const [page, setPage] = useState<number>(0);
   const [loadMore, setLoadMore] = useState<boolean>(false);
-  const [content, setContent] = useState<string>(''); 
-  const [query, setQuery] = useState<string>(''); 
+  const [content, setContent] = useState<string>('');
+  const [query, setQuery] = useState<string>('');
   const [modalIsOpen, setIsOpen] = useState<boolean>(false);
 
   const userQuery = (value: string): void => {
