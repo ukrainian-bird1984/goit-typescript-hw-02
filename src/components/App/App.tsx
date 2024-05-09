@@ -1,17 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { fetchPhotosByQuery } from '../api';
-
 import SearchBar from '../SearchBar/SearchBar';
 import ImageGallery from '../ImageGallery/ImageGallery';
 import Loader from '../Loader/Loader';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import LoadMoreBtn from '../LoadMoreBtn/LoadMoreBtn';
 import ImageModal from '../ImageModal/ImageModal';
-
+import ScrollIntoView from 'react-scroll-into-view';
+import ScrollUp from '../ScrollUp/ScrollUp'; 
 import css from './App.module.css';
 
+interface Photo {
+  id: string;
+  urls: {
+    regular: string;
+    thumb: string;
+  };
+}
 
-const App = () => {
+const App: React.FC = () => {
   const [photos, setPhotos] = useState<Photo[] | null>(null);
   const [query, setQuery] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
@@ -40,10 +47,7 @@ const App = () => {
       try {
         setLoading(true);
         setError(false);
-        const data = await getPhotos<{
-          total_pages?: number;
-          results: Photo[];
-        }>(query, page);
+        const data = await fetchPhotosByQuery(query, page);
         setPhotos(prevPhotos => {
           if (Array.isArray(prevPhotos)) {
             return [...prevPhotos, ...data.results];
@@ -92,10 +96,10 @@ const App = () => {
       {loading && <Loader />}
       {error && <ErrorMessage />}
       {photos !== null && (
-        <ImageGallery collection={photos} onPhotoClick={openModal} />
+        <ImageGallery collection={photos} onPhotoClick={openModal} openModal={openModal} />
       )}
       {totalPages > page && <LoadMoreBtn onLoadMoreBtn={loadMorePhotos} />}
-      <ImageModal isOpen={!!selectedPhoto} photo={selectedPhoto} onRequestClose={closeModal} />
+      <ImageModal isOpen={!!selectedPhoto} onRequestClose={closeModal} />
       {scrollBtn && <ScrollIntoView selector="#header"><ScrollUp onScrollBtn={onScrollBtn} /></ScrollIntoView>}
     </div>
   );
