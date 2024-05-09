@@ -2,7 +2,7 @@ import React from 'react';
 import ImageCard from '../ImageCard/ImageCard';
 import css from './ImageGallery.module.css';
 
-interface Photo {
+interface ImageProps {
   id: string;
   urls: {
     regular: string;
@@ -15,7 +15,7 @@ interface Photo {
 }
 
 interface ImageGalleryProps {
-  collection: Photo[];
+  collection: ImageProps[];
   onPhotoClick: (url: string) => void;
   openModal: () => void;
 }

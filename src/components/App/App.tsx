@@ -24,7 +24,7 @@ interface ImageData {
 
 interface ServerResponse {
   total_pages?: number;
-  results: ImageData[];
+  results: ImageProps[];
 }
 
 const App: React.FC = () => {
