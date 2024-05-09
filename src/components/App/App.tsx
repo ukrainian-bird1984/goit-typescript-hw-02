@@ -1,126 +1,102 @@
-import React, { useEffect, useState } from 'react';
-import { fetchPhotosByQuery } from '../api';
+import React, { useState, useEffect } from "react";
+import "./App.css";
+import SearchBar from "./components/SearchBar/SearchBar";
+import Loader from "./components/Loader/Loader";
+import ErrorMessage from "./components/ErrorMessage/ErrorMessage";
+import ImageGallery from "./components/ImageGallery/ImageGallery";
+import { getPhotos } from "./service/api";
+import LoadMoreBtn from "./components/LoadMoreBtn/LoadMoreBtn";
+import { ImageModal } from "./components/ImageModal/ImageModal";
+import ScrollUp from "./components/ScrollUp/ScrollUp";
+import ScrollIntoView from 'react-scroll-into-view';
+import { Photo } from "./types";
 
-import SearchBar from '../SearchBar/SearchBar';
-import ImageGallery from '../ImageGallery/ImageGallery';
-import Loader from '../Loader/Loader';
-import ErrorMessage from '../ErrorMessage/ErrorMessage';
-import LoadMoreBtn from '../LoadMoreBtn/LoadMoreBtn';
-import ImageModal from '../ImageModal/ImageModal';
-
-import css from './App.module.css';
-
-interface ImageData {
-  id: string;
-  urls: {
-    regular: string;
-    thumb: string;
-  };
-  description: string;
-  alt_description: string;
-  likes: number;
-  user: string;
-}
-
-interface ServerResponse {
-  total_pages?: number;
-  results: ImageProps[];
-}
-
-const App: React.FC = () => {
-  const [response, setResponse] = useState<ServerResponse | null>(null);
-  const [photos, setPhotos] = useState<ImageData[] | null>(null);
+const App = () => {
+  const [photos, setPhotos] = useState<Photo[] | null>(null);
+  const [query, setQuery] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
-  const [page, setPage] = useState<number>(0);
-  const [loadMore, setLoadMore] = useState<boolean>(false);
-  const [content, setContent] = useState<string>('');
-  const [query, setQuery] = useState<string>('');
-  const [modalIsOpen, setIsOpen] = useState<boolean>(false);
-
-  const userQuery = (value: string): void => {
-    setQuery(value);
-    setPage(1);
-    setPhotos(null);
-  };
+  const [page, setPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(0);
+  const [selectedPhoto, setSelectedPhoto] = useState<Photo | undefined>(undefined);
+  const [scrollBtn, setScrollBtn] = useState<boolean>(false);
 
   useEffect(() => {
-    async function fetchPhotos() {
-      if (query === '') return;
+    const handleScroll = () => {
+      if (window.innerWidth > 900) {
+        const isScrollBtnVisible = window.scrollY > 200;
+        setScrollBtn(isScrollBtnVisible);
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!query) return;
+    async function handleSearch() {
       try {
         setLoading(true);
         setError(false);
-
-        const data = await fetchPhotosByQuery(query, page);
-
-        setResponse(data);
-
-        if (data.total_pages === 0) {
-          setError(true);
-          setLoadMore(false);
-        }
-
-        if (photos === null || photos.length === 0) {
-          setPhotos(data.results);
-        } else if (page > 1) {
-          setPhotos(prevPhotos => [...(prevPhotos || []), ...data.results]);
-        } else {
-          setPhotos(data.results);
-        }
+        const data = await getPhotos<{
+          total_pages?: number;
+          results: Photo[];
+        }>(query, page);
+        setPhotos(prevPhotos => {
+          if (Array.isArray(prevPhotos)) {
+            return [...prevPhotos, ...data.results];
+          } else {
+            return [...data.results];
+          }
+        });
+        setTotalPages(data.total_pages || 0);
       } catch (error) {
         setError(true);
       } finally {
         setLoading(false);
       }
     }
-    fetchPhotos();
-    if (query !== '') {
-      setLoadMore(true);
-    }
+    handleSearch();
   }, [query, page]);
 
-  const loadMorePhotos = (): void => {
-    if (response && page <= response.total_pages) {
-      setPage(page + 1);
-    } else {
-      setLoadMore(false);
-      setPage(0);
+  const handleQuery = (newQuery: string) => {
+    if (newQuery !== query) {
+      setQuery(newQuery);
+      setPhotos(null);
+      setPage(1);
+      setTotalPages(0);
     }
   };
 
-  const handleImageClick = (url: string): void => {
-    setContent(url);
+  const loadMorePhotos = () => {
+    setPage(prevPage => prevPage + 1);
   };
 
-  const openModal = (): void => {
-    setIsOpen(true);
+  const openModal = (photo: Photo) => {
+    setSelectedPhoto(photo);
   };
 
-  const closeModal = (): void => {
-    setIsOpen(false);
+  const closeModal = () => {
+    setSelectedPhoto(undefined);
+  };
+
+  const onScrollBtn = () => {
+    setScrollBtn(false);
   };
 
   return (
-    <div className={css.container}>
-      <SearchBar onSubmit={userQuery}></SearchBar>
-      {Array.isArray(photos) && (
-        <ImageGallery
-          collection={photos}
-          onPhotoClick={handleImageClick}
-          openModal={openModal}
-        ></ImageGallery>
+    <div>
+      <SearchBar onSubmit={handleQuery} />
+      {loading && <Loader />}
+      {error && <ErrorMessage />}
+      {photos !== null && (
+        <ImageGallery collection={photos} onPhotoClick={openModal} />
       )}
-      {error && <ErrorMessage></ErrorMessage>}
-      {loading && <Loader></Loader>}
-      {loadMore && (
-        <LoadMoreBtn loadMorePhotos={loadMorePhotos}></LoadMoreBtn>
-      )}
-      <ImageModal
-        onOpenButton={openModal}
-        isOpen={modalIsOpen}
-        onRequestClose={closeModal}
-        content={content || ''}
-      ></ImageModal>
+      {totalPages > page && <LoadMoreBtn onLoadMoreBtn={loadMorePhotos} />}
+      <ImageModal isOpen={!!selectedPhoto} photo={selectedPhoto} onRequestClose={closeModal} />
+      {scrollBtn && <ScrollIntoView selector="#header"><ScrollUp onScrollBtn={onScrollBtn} /></ScrollIntoView>}
     </div>
   );
 };
