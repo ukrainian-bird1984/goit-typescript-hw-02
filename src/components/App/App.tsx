@@ -13,7 +13,7 @@ import { Photo } from '../types';
 import css from './App.module.css';
 
 const App: React.FC = () => {  
-  const [response, setResponse] = useState<AxiosResponse<{ data: { results: Photo[] } }> | null>(null);
+  const [response, setResponse] = useState<AxiosResponse<{ data: { total_pages: number; results: Photo[] } }> | null>(null);
   const [photos, setPhotos] = useState<Photo[] | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
