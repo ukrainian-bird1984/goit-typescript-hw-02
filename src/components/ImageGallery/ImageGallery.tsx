@@ -4,6 +4,10 @@ import css from './ImageGallery.module.css';
 
 interface Image {
   id: string;
+  urls: {
+    regular: string;
+    thumb: string;
+  };
 }
 
 interface ImageGalleryProps {
@@ -15,7 +19,7 @@ interface ImageGalleryProps {
 const ImageGallery: React.FC<ImageGalleryProps> = ({ collection, onPhotoClick, openModal }) => {
   return (
     <ul className={css.image}>
-      {collection.map((item: Image) => (
+      {collection.map(item => (
         <li key={item.id}>
           <ImageCard image={item} onPhotoClick={onPhotoClick} openModal={openModal} />
         </li>

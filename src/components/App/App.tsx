@@ -11,17 +11,27 @@ import ImageModal from '../ImageModal/ImageModal';
 import css from './App.module.css';
 
 interface Photo {
+  id: string;
+  urls: {
+    regular: string;
+    thumb: string;
+  };
+}
+
+interface ServerResponse {
+  total_pages: number;
+  results: Photo[];
 }
 
 const App: React.FC = () => {
-  const [response, setResponse] = useState<UnsplashResponse | null>(null);
+  const [response, setResponse] = useState<ServerResponse | null>(null);
   const [photos, setPhotos] = useState<Photo[] | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
   const [page, setPage] = useState<number>(0);
   const [loadMore, setLoadMore] = useState<boolean>(false);
-  const [content, setContent] = useState<string>('');
-  const [query, setQuery] = useState<string>('');
+  const [content, setContent] = useState<string>(''); 
+  const [query, setQuery] = useState<string>(''); 
   const [modalIsOpen, setIsOpen] = useState<boolean>(false);
 
   const userQuery = (value: string): void => {

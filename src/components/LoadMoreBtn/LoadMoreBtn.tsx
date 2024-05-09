@@ -2,8 +2,7 @@ import { useEffect, useRef, MouseEvent } from 'react';
 import css from './LoadMoreBtn.module.css';
 
 interface LoadMoreBtnProps {
-  onLoadMoreBtn: () => void;
-  loadMoreScroll: string[];
+  loadMorePhotos: MouseEventHandler<HTMLButtonElement>;
 }
 
 const LoadMoreBtn: React.FC<LoadMoreBtnProps> = ({ onLoadMoreBtn, loadMoreScroll }) => {
