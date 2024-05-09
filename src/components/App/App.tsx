@@ -10,22 +10,26 @@ import ImageModal from '../ImageModal/ImageModal';
 
 import css from './App.module.css';
 
-interface Photo {
+interface ImageData {
   id: string;
   urls: {
     regular: string;
     thumb: string;
   };
+  description: string;
+  alt_description: string;
+  likes: number;
+  user: string;
 }
 
 interface ServerResponse {
-  total_pages: number;
-  results: Photo[];
+  total_pages?: number;
+  results: ImageData[];
 }
 
 const App: React.FC = () => {
   const [response, setResponse] = useState<ServerResponse | null>(null);
-  const [photos, setPhotos] = useState<Photo[] | null>(null);
+  const [photos, setPhotos] = useState<ImageData[] | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
   const [page, setPage] = useState<number>(0);
