@@ -8,17 +8,9 @@ import Loader from '../Loader/Loader';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import LoadMoreBtn from '../LoadMoreBtn/LoadMoreBtn';
 import ImageModal from '../ImageModal/ImageModal';
-import { Photo } from '../types';
+import { Photo } from '../types'; 
 
 import css from './App.module.css';
-
-interface Photo {
-  id: string;
-  urls: {
-    regular: string;
-    thumb: string;
-  };
-}
 
 const App: React.FC = () => {
   const [response, setResponse] = useState<AxiosResponse<{ data: { total_pages: number; results: Photo[] } }> | null>(null);

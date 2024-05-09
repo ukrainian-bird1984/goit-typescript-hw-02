@@ -4,14 +4,6 @@ import { Photo } from '../types';
 
 import css from './ImageGallery.module.css';
 
-interface Photo {
-  id: string;
-  urls: {
-    regular: string;
-    thumb: string;
-  };
-}
-
 interface ImageGalleryProps {
   collection: Photo[];
   onPhotoClick: (url: string) => void;
