@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
+import { AxiosResponse } from 'axios';
 import { fetchPhotosByQuery } from '../api';
+
 import SearchBar from '../SearchBar/SearchBar';
 import ImageGallery from '../ImageGallery/ImageGallery';
 import Loader from '../Loader/Loader';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import LoadMoreBtn from '../LoadMoreBtn/LoadMoreBtn';
 import ImageModal from '../ImageModal/ImageModal';
-import ScrollIntoView from 'react-scroll-into-view';
-import ScrollUp from '../ScrollUp/ScrollUp'; 
+
 import css from './App.module.css';
 
 interface Photo {
@@ -19,88 +20,99 @@ interface Photo {
 }
 
 const App: React.FC = () => {
+  const [response, setResponse] = useState<AxiosResponse<any> | null>(null);
   const [photos, setPhotos] = useState<Photo[] | null>(null);
-  const [query, setQuery] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
-  const [page, setPage] = useState<number>(1);
-  const [totalPages, setTotalPages] = useState<number>(0);
-  const [selectedPhoto, setSelectedPhoto] = useState<Photo | undefined>(undefined);
-  const [scrollBtn, setScrollBtn] = useState<boolean>(false);
+  const [page, setPage] = useState<number>(0);
+  const [loadMore, setLoadMore] = useState<boolean>(false);
+  const [content, setContent] = useState<string>(''); 
+  const [query, setQuery] = useState<string>('');
+  const [modalIsOpen, setIsOpen] = useState<boolean>(false);
+
+  const userQuery = (value: string): void => {
+    setQuery(value);
+    setPage(1);
+    setPhotos(null);
+  };
 
   useEffect(() => {
-    const handleScroll = () => {
-      if (window.innerWidth > 900) {
-        const isScrollBtnVisible = window.scrollY > 200;
-        setScrollBtn(isScrollBtnVisible);
-      }
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!query) return;
-    async function handleSearch() {
+    async function fetchPhotos() {
+      if (query === '') return;
       try {
         setLoading(true);
         setError(false);
+
         const data = await fetchPhotosByQuery(query, page);
-        setPhotos(prevPhotos => {
-          if (Array.isArray(prevPhotos)) {
-            return [...prevPhotos, ...data.results];
-          } else {
-            return [...data.results];
-          }
-        });
-        setTotalPages(data.total_pages || 0);
+
+        setResponse(data);
+
+        if (data.data.total_pages === 0) {
+          setError(true);
+          setLoadMore(false);
+        }
+
+        if (photos === null || photos.length === 0) {
+          setPhotos(data.data.results);
+        } else if (page > 1) {
+          setPhotos(prevPhotos => [...(prevPhotos || []), ...data.data.results]);
+        } else {
+          setPhotos(data.data.results);
+        }
       } catch (error) {
         setError(true);
       } finally {
         setLoading(false);
       }
     }
-    handleSearch();
+    fetchPhotos();
+    if (query !== '') {
+      setLoadMore(true);
+    }
   }, [query, page]);
 
-  const handleQuery = (newQuery: string) => {
-    if (newQuery !== query) {
-      setQuery(newQuery);
-      setPhotos(null);
-      setPage(1);
-      setTotalPages(0);
+  const loadMorePhotos = (): void => {
+    if (response && page <= response.data.total_pages) {
+      setPage(page + 1);
+    } else {
+      setLoadMore(false);
+      setPage(0);
     }
   };
 
-  const loadMorePhotos = () => {
-    setPage(prevPage => prevPage + 1);
+  const handleImageClick = (url: string): void => {
+    setContent(url);
   };
 
-  const openModal = (photo: Photo) => {
-    setSelectedPhoto(photo);
+  const openModal = (): void => {
+    setIsOpen(true);
   };
 
-  const closeModal = () => {
-    setSelectedPhoto(undefined);
-  };
-
-  const onScrollBtn = () => {
-    setScrollBtn(false);
+  const closeModal = (): void => {
+    setIsOpen(false);
   };
 
   return (
-    <div>
-      <SearchBar onSubmit={handleQuery} />
-      {loading && <Loader />}
-      {error && <ErrorMessage />}
-      {photos !== null && (
-        <ImageGallery collection={photos} onPhotoClick={openModal} openModal={openModal} />
+    <div className={css.container}>
+      <SearchBar onSubmit={userQuery}></SearchBar>
+      {Array.isArray(photos) && (
+        <ImageGallery
+          collection={photos}
+          onPhotoClick={handleImageClick}
+          openModal={openModal}
+        ></ImageGallery>
       )}
-      {totalPages > page && <LoadMoreBtn onLoadMoreBtn={loadMorePhotos} />}
-      <ImageModal isOpen={!!selectedPhoto} onRequestClose={closeModal} />
-      {scrollBtn && <ScrollIntoView selector="#header"><ScrollUp onScrollBtn={onScrollBtn} /></ScrollIntoView>}
+      {error && <ErrorMessage></ErrorMessage>}
+      {loading && <Loader></Loader>}
+      {loadMore && (
+        <LoadMoreBtn loadMoreScroll={photos || []} onLoadMoreBtn={loadMorePhotos}></LoadMoreBtn>
+      )}
+      <ImageModal
+        onOpenButton={openModal}
+        isOpen={modalIsOpen}
+        onRequestClose={closeModal}
+        content={content || ''}
+      ></ImageModal>
     </div>
   );
 };
