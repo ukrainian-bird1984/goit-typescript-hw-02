@@ -8,18 +8,6 @@ interface Photo {
     regular: string;
     thumb: string;
   };
-  description: string;
-  alt_description: string;
-  likes: number;
-  user: {
-    username: string;
-    name: string;
-    profile_image: {
-      small: string;
-      medium: string;
-      large: string;
-    };
-  };
 }
 
 interface ImageGalleryProps {
