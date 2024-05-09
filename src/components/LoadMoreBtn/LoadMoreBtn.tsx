@@ -1,21 +1,21 @@
-import { useEffect, useRef, MouseEvent } from 'react';
+import { useEffect, useRef, MouseEventHandler } from 'react'; 
 import css from './LoadMoreBtn.module.css';
 
 interface LoadMoreBtnProps {
-  loadMorePhotos: MouseEventHandler<HTMLButtonElement>;
+  loadMorePhotos: () => void; 
 }
 
-const LoadMoreBtn: React.FC<LoadMoreBtnProps> = ({ onLoadMoreBtn, loadMoreScroll }) => {
+const LoadMoreBtn: React.FC<LoadMoreBtnProps> = ({ loadMorePhotos }) => {
   const onBtnRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (onBtnRef.current) {
       onBtnRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
     }
-  }, [loadMoreScroll]);
+  }, []);
 
-  const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
-    onLoadMoreBtn();
+  const handleClick: MouseEventHandler<HTMLButtonElement> = (e) => { 
+    loadMorePhotos();
   };
 
   return (

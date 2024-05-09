@@ -109,7 +109,7 @@ const App: React.FC = () => {
       {error && <ErrorMessage></ErrorMessage>}
       {loading && <Loader></Loader>}
       {loadMore && (
-        <LoadMoreBtn loadMoreScroll={photos || []} onLoadMoreBtn={loadMorePhotos}></LoadMoreBtn>
+        <LoadMoreBtn loadMorePhotos={loadMorePhotos}></LoadMoreBtn>
       )}
       <ImageModal
         onOpenButton={openModal}
