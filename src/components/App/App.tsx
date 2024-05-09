@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { AxiosResponse } from 'axios';
 import { fetchPhotosByQuery } from '../api';
 
+import types from '../types';
 import SearchBar from '../SearchBar/SearchBar';
 import ImageGallery from '../ImageGallery/ImageGallery';
 import Loader from '../Loader/Loader';

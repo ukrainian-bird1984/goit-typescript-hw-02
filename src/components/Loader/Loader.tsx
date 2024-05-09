@@ -1,5 +1,6 @@
 import React from 'react';
 import { Bars } from 'react-loader-spinner';
+import types from '../types';
 import css from './Loader.module.css';
 
 const Loader: React.FC = () => {

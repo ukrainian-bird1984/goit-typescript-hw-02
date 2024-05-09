@@ -1,5 +1,6 @@
 import React from 'react';
 import Modal from 'react-modal';
+import types from '../types';
 
 interface ImageModalProps {
   isOpen: boolean;
