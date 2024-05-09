@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from "react";
-import "./App.css";
-import SearchBar from "./components/SearchBar/SearchBar";
-import Loader from "./components/Loader/Loader";
-import ErrorMessage from "./components/ErrorMessage/ErrorMessage";
-import ImageGallery from "./components/ImageGallery/ImageGallery";
-import { getPhotos } from "./service/api";
-import LoadMoreBtn from "./components/LoadMoreBtn/LoadMoreBtn";
-import { ImageModal } from "./components/ImageModal/ImageModal";
-import ScrollUp from "./components/ScrollUp/ScrollUp";
-import ScrollIntoView from 'react-scroll-into-view';
-import { Photo } from "./types";
+import React, { useEffect, useState } from 'react';
+import { fetchPhotosByQuery } from '../api';
+
+import SearchBar from '../SearchBar/SearchBar';
+import ImageGallery from '../ImageGallery/ImageGallery';
+import Loader from '../Loader/Loader';
+import ErrorMessage from '../ErrorMessage/ErrorMessage';
+import LoadMoreBtn from '../LoadMoreBtn/LoadMoreBtn';
+import ImageModal from '../ImageModal/ImageModal';
+
+import css from './App.module.css';
+
 
 const App = () => {
   const [photos, setPhotos] = useState<Photo[] | null>(null);
