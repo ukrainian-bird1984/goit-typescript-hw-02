@@ -1,19 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { AxiosResponse } from 'axios';
 import { fetchPhotosByQuery } from '../api';
-
 import SearchBar from '../SearchBar/SearchBar';
 import ImageGallery from '../ImageGallery/ImageGallery';
 import Loader from '../Loader/Loader';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import LoadMoreBtn from '../LoadMoreBtn/LoadMoreBtn';
 import ImageModal from '../ImageModal/ImageModal';
-import { Photo } from '../types'; 
+import { Photo, ApiResponse } from '../types'; 
 
 import css from './App.module.css';
 
 const App: React.FC = () => {  
-  const [response, setResponse] = useState<AxiosResponse<{ data: { total_pages: number; results: Photo[] } }> | null>(null);
+  const [totalPages, setTotalPages] = useState<number>(0);
   const [photos, setPhotos] = useState<Photo[] | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
@@ -28,29 +27,27 @@ const App: React.FC = () => {
     setPage(1);
     setPhotos(null);
   };
-
-  useEffect(() => {
+useEffect(() => {
     async function fetchPhotos() {
       if (query === '') return;
       try {
         setLoading(true);
         setError(false);
 
-        const data = await fetchPhotosByQuery(query, page);
+        const data = await fetchPhotosByQuery<ApiResponse>(query, page); 
+        setTotalPages(data.total_pages);
 
-        setResponse(data);
-
-        if (data.data.total_pages === 0) {
+        if (data.total_pages === 0) {
           setError(true);
           setLoadMore(false);
         }
 
         if (photos === null || photos.length === 0) {
-          setPhotos(data.data.results);
+          setPhotos(data.results);
         } else if (page > 1) {
-          setPhotos(prevPhotos => [...(prevPhotos || []), ...data.data.results]);
+          setPhotos(prevPhotos => [...(prevPhotos || []), ...data.results]);
         } else {
-          setPhotos(data.data.results);
+          setPhotos(data.results);
         }
       } catch (error) {
         setError(true);
@@ -65,7 +62,7 @@ const App: React.FC = () => {
   }, [query, page]);
 
   const loadMorePhotos = (): void => {
-    if (response && page <= response.data.total_pages) {
+    if (page <= totalPages) { 
       setPage(page + 1);
     } else {
       setLoadMore(false);

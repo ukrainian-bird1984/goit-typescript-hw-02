@@ -11,3 +11,8 @@ export interface Photo {
       name: string;
     };
   }
+
+  export interface ApiResponse {
+  results: Photo[];
+  total_pages: number;
+}
