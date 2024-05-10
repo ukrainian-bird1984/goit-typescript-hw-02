@@ -8,7 +8,6 @@ import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import LoadMoreBtn from '../LoadMoreBtn/LoadMoreBtn';
 import ImageModal from '../ImageModal/ImageModal';
 import { Photo, ApiResponse } from '../types'; 
-
 import css from './App.module.css';
 
 const App: React.FC = () => {  
@@ -95,7 +94,7 @@ useEffect(() => {
       {error && <ErrorMessage></ErrorMessage>}
       {loading && <Loader></Loader>}
       {loadMore && (
-        <LoadMoreBtn loadMoreScroll={photos || []} onLoadMoreBtn={loadMorePhotos}></LoadMoreBtn>
+        <LoadMoreBtn onLoadMoreBtn={loadMorePhotos}></LoadMoreBtn>
       )}
       <ImageModal
         onOpenButton={openModal}
